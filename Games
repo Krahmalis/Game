@@ -1,0 +1,51 @@
+import pygame
+import sys
+
+pygame.init()
+screen_width = 700
+screen_height = 700
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Таджики не врут.")
+
+fighter_image = pygame.image.load("images/fighter.png")
+fighter_width, fighter_height = fighter_image.get_size()
+fighter_x, fighter_y = screen_width/2 - fighter_width/2, screen_height - fighter_height
+FIGHTER_STEP = 1
+
+rocket_image = pygame.image.load("images/rocket.png")
+rocket_width, rocket_height = rocket_image.get_size()
+fighter_flag_r, fighter_flag_l = False, False
+rocket_flag = False
+ROCKET_STEP = 0.5
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                fighter_flag_l = True
+                fighter_x -= FIGHTER_STEP
+            if event.key == pygame.K_RIGHT:
+                fighter_flag_r = True
+                fighter_x += FIGHTER_STEP
+            if event.key == pygame.K_SPACE:
+                rocket_flag = True
+                rocket_x = fighter_x + fighter_width/2 - rocket_width/2
+                rocket_y = screen_height - fighter_height
+        if event.type == pygame.KEYUP:
+            fighter_flag_l = False
+            fighter_flag_r = False
+    if fighter_flag_l and fighter_x > 0:
+        fighter_x -= FIGHTER_STEP
+    if fighter_flag_r and fighter_x < screen_width - fighter_width:
+        fighter_x += FIGHTER_STEP
+
+    screen.fill((8, 38, 78))
+    screen.blit(fighter_image, (fighter_x, fighter_y))
+
+    if rocket_flag:
+        screen.blit(rocket_image, (rocket_x, rocket_y))
+        rocket_y -= ROCKET_STEP
+
+    pygame.display.update()
